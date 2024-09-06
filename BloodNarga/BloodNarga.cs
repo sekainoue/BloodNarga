@@ -92,7 +92,11 @@ namespace BloodNarga
 
             if (_bloodNarga is not null && _bloodNarga == monster)
             {
-                ResetState(); // watch out for this, it only works because Narga doesn't decay
+                // watch out for using ResetState here, because if Narga decayed all values are reset
+                _bloodNarga = null;
+                _actionCounts = 0;
+                _transparentMode = false;
+                _allBloodNargaDies = false;
             }
         }
         public void OnMonsterDeath(Monster monster)
@@ -137,17 +141,28 @@ namespace BloodNarga
             if (!_inQuest) return;
             if (Quest.CurrentQuestId == 333003 && monster.Type == MonsterType.Banbaro && _banbaro is not null)
             {
-                if (_stepCounts == 20)
+                if (_stepCounts > 0)
                 {
-                    _banbaro.Teleport(new Vector3(-2722.2f, 445.2f, 17207.6f));
-                    Gui.DisplayPopup("EAT IN QUEST FOR MAXIMUM DARKNESS", TimeSpan.FromMilliseconds(5000));
-                    _stepCounts = 1;
-                }
-                else if (_stepCounts == 1)
-                {
-                    _bloodNarga.ForceAction(189); // TRIPLEBLADE
-                    monster.Health = 0f;
-                    _stepCounts = 0;
+                    if (_stepCounts == 19)
+                    {
+                        _banbaro.Teleport(new Vector3(-2722.2f, 445.2f, 17207.6f));
+                        Gui.DisplayPopup("EAT IN QUEST FOR MAXIMUM DARKNESS", TimeSpan.FromMilliseconds(5000));
+                    }
+                    else if (_stepCounts == 18)
+                    {
+                        _bloodNarga.ForceAction(189); // TRIPLEBLADE
+                        monster.Health = 0f;
+                    }
+                    else if (_stepCounts == 15)
+                    {
+                        _bloodNarga.ForceAction(113);
+                    }
+                    else if (_stepCounts == 13)
+                    {
+                        _bloodNarga.ForceAction(122);
+                        _stepCounts = 1;
+                    }
+                    _stepCounts--;
                 }
                 else
                 {
@@ -173,10 +188,12 @@ namespace BloodNarga
                     actionId = actionId switch
                     {
                         >= 25 and <= 31 => 40, // SlimSearch to MeatEatToFat, beware of PredatorEat targeting another Monster
+                        241 => 111, // BellyBreak to FAT_BACK_REVERSE_PETIT_START
                         37 => 41, // PredatorEat to SlimToFat
                         187 => 60, 233 => 114, // Clagger to JumpAttack
                         171 => 53, 222 => 99, // Down to ScratchAttackL
                         202 => 269, 248 => 98, // FloorFall to MaxPunch or FatBodyPress
+                        196 => 192, 197 => 60, 242 => 236, 243 => 114, //TrapPara to Para, TrapPit to Jump
                         _ => actionId // default case, keep the original actionId
                     };
                 }

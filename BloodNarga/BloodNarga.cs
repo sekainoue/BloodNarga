@@ -141,6 +141,7 @@ namespace BloodNarga
             if (!_inQuest) return;
             if (Quest.CurrentQuestId == 333003 && monster.Type == MonsterType.Banbaro && _banbaro is not null)
             {
+                if (_bloodNarga is null) return;
                 if (_stepCounts > 0)
                 {
                     if (_stepCounts == 19)
@@ -153,14 +154,13 @@ namespace BloodNarga
                         _bloodNarga.ForceAction(189); // TRIPLEBLADE
                         monster.Health = 0f;
                     }
-                    else if (_stepCounts == 15)
+                    else if (_stepCounts == 14)
                     {
-                        _bloodNarga.ForceAction(113);
+                        _bloodNarga.ForceAction(122); // sunbath
                     }
-                    else if (_stepCounts == 13)
+                    else if (_stepCounts <= 12)
                     {
-                        _bloodNarga.ForceAction(122);
-                        _stepCounts = 1;
+                        _bloodNarga.ForceAction(113); // eat
                     }
                     _stepCounts--;
                 }

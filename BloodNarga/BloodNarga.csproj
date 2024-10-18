@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpPluginLoader.Core" Version="0.0.6" />
+    <Compile Remove="backup.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="backup.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpPluginLoader.Core" Version="0.0.7" />
     <PackageReference Include="SharpPluginLoader.ImGui" Version="1.90.2.3" />
   </ItemGroup>
 
